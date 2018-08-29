@@ -25,14 +25,16 @@ end
 
 def print_header
   puts "The students of Villains Academy"
-  puts "-------------"
+  puts "-------------".center(31)
 end
 
 def print(students)
   iterator = 0
   while students.select! { |val| val[:name].start_with?("S") && (val[:name].length < 12)}
-    puts "#{iterator + 1}. #{students[iterator][:name]} #{students[iterator][:hobby]} (#{students[iterator][:cohort]} cohort)"
-    iterator += 1
+    until iterator == students.length
+      puts "#{iterator + 1}. #{students[iterator][:name]} #{students[iterator][:hobby]} (#{students[iterator][:cohort]} cohort)"
+      iterator += 1
+    end
   end
 end
 # finally, we print the total number of students
