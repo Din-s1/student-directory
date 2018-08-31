@@ -2,10 +2,14 @@ def input_students
   puts "Please enter the name of the student followed then hit enter and enter their hobby"
   puts "To finish, just hit return thrice"
   students = []
-  name, cohort, hobby = gets.chomp, gets.chomp, gets.chomp
+  name, cohort, hobby = gets.strip, gets.strip, gets.chomp
   while !name.empty?
-    cohort = "Novembuary" if cohort == ""
-    hobby = "Fun" if hobby == ""
+    if cohort == ""
+      cohort = "Cohort not supplied."
+    end
+    if hobby == ""
+      hobby = "Fun"
+    end
     students << {name: name.capitalize, cohort: cohort, hobby: hobby}
     puts "Now we have #{students.count} students"
     name, cohort, hobby = gets.chomp, gets.chomp, gets.chomp
@@ -16,6 +20,22 @@ end
 def print_header
   puts "The students of Villains Academy"
   puts "-------------".center(31)
+end
+
+def group(students)
+  puts "Enter category to group people by"
+cat_key = gets.chomp
+filter = {}
+students.each do |person|
+  category = person[cat_key]
+  name = person[:name]
+  if filter[category] == nil
+    filter[category] = [name]
+  else
+    filter[category].push(name)
+  end
+end
+  filter.each { |k, v| k, v }
 end
 
 def print(students)
@@ -42,11 +62,15 @@ end
 =end
 
 def print_footer(names)
-  puts "Overall, we have #{names.count} great students."
+  if names.count > 1
+    puts "Overall, we have #{names.count} great students."
+  else
+    puts "Overall, we have #{names.count} great student."
+  end
 end
 
 students = input_students
 print_header
-group
+group(students)
 print(students)
 print_footer(students)
