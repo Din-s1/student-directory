@@ -1,3 +1,4 @@
+
 @students = [] # an empty array accessible to all methods
 
 def print_menu
@@ -54,7 +55,7 @@ def show_students
 end
 
 def print_header
-  puts "The students of Villains Academy"
+  puts "The students of this Academy"
   puts "-------------"
 end
 
@@ -75,7 +76,7 @@ end
 
 def save_students
   # open the file for writing
-  file = File.open("students.csv", "w")
+  file = File.open("students.csv", "r")
   # iterate over the array of students
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
@@ -86,7 +87,13 @@ def save_students
 end
 
 def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
+  puts "Please enter the filename to load:"
+  file_grab = gets.chomp
+  if file_grab == ""
+   file = File.open(filename, "r")
+  else
+    file = File.open(file_grab, "r")
+  end
   file.readlines.each do |line|
   name, cohort = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym}
