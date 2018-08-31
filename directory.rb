@@ -1,76 +1,84 @@
+@students = [] # an empty array accessible to all methods
+
 def input_students
-  puts "Please enter the name of the student followed then hit enter and enter their hobby"
-  puts "To finish, just hit return thrice"
-  students = []
-  name, cohort, hobby = gets.strip, gets.strip, gets.chomp
-  while !name.empty?
-    if cohort == ""
-      cohort = "Cohort not supplied."
-    end
-    if hobby == ""
-      hobby = "Fun"
-    end
-    students << {name: name.capitalize, cohort: cohort, hobby: hobby}
-    puts "Now we have #{students.count} students"
-    name, cohort, hobby = gets.chomp, gets.chomp, gets.chomp
+  puts "Please enter the names of the students"
+  puts "To finish, just hit return twice"
+  # get the first name
+  name = gets.chomp
+  # while the name is not empty, repeat this code
+  while !name.empty? do
+    # add the student hash to the array
+    @students << {name: name, cohort: :november}
+    puts "Now we have #{@students.count} students"
+    # get another name from the user
+    name = gets.chomp
   end
-  students
+end
+
+def interactive_menu
+  loop do
+    print_menu
+    process(gets.chomp)
+  end
+end
+
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "3. Save the list to students.csv"
+  puts "9. Exit" # 9 because we'll be adding more items
+end
+
+def show_students
+  print_header
+  print_student_list
+  print_footer
+end
+
+def process(selection)
+  case selection
+  when "1"
+    input_students
+  when "2"
+    show_students
+  when "3"
+    save_students
+  when "9"
+    exit # this will cause the program to terminate
+  else
+    puts "I don't know what you meant, try again"
+  end
 end
 
 def print_header
   puts "The students of Villains Academy"
-  puts "-------------".center(31)
+  puts "-------------"
 end
 
-def group(students)
-  puts "Enter category to group people by"
-cat_key = gets.chomp
-filter = {}
-students.each do |person|
-  category = person[cat_key]
-  name = person[:name]
-  if filter[category] == nil
-    filter[category] = [name]
+def print_student_list
+  @students.each do |student|
+    puts "#{student[:name]} (#{student[:cohort]} cohort)"
+  end
+end
+
+def print_footer
+  if @students.count > 1 || @students.count == 0
+    puts "Overall, we have #{@students.count} great students"
   else
-    filter[category].push(name)
-  end
-end
-  filter.each { |k, v| k, v }
-end
-
-def print(students)
-  iterator = 0
-  while students.select! { |val| val[:name].start_with?("S") && (val[:name].length < 12)}
-    until iterator == students.length
-      puts "#{iterator + 1}. #{students[iterator][:name]}, #{students[iterator][:hobby]}, (#{students[iterator][:cohort]} cohort)"
-      iterator += 1
-    end
+    puts "Overall, we have 1 great student"
   end
 end
 
-=begin
-an attempt to create a method that gets user input and
- selects the hash value that is a typo and needs to be replaced
- *approach: will get user input to iterate through and match value then using select
- will replace the original value. CI thought... what if we have the same name twice
- John Smith?
-def typo
-  puts "Please enter the typo as shown in the list"
-  mistake = gets.chomp
-  students.replace {|typo| typo[mistake] }
-end
-=end
-
-def print_footer(names)
-  if names.count > 1
-    puts "Overall, we have #{names.count} great students."
-  else
-    puts "Overall, we have #{names.count} great student."
+def save_students
+  # open the file for writing
+  file = File.open("students.csv", "w")
+  # iterate over the array of students
+  @students.each do |student|
+    student_data = [student[:name], student[:cohort]]
+    csv_line = student_data.join(",")
+    file.puts csv_line
   end
+  file.close
 end
 
-students = input_students
-print_header
-group(students)
-print(students)
-print_footer(students)
+interactive_menu
